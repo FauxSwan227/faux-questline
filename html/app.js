@@ -129,14 +129,14 @@ function renderTabs() {
 function rewardIcon(type) {
   const text = {
     cash: '$',
-    vehicle: '◆',
+    vehicle: 'V',
     xp: 'XP',
-    crate: '□',
+    crate: 'BOX',
     access: 'ID',
-    badge: '★',
+    badge: '*',
     contact: '#',
-    item: '◇',
-  }[type] || '★';
+    item: 'ITEM',
+  }[type] || '*';
 
   return `<span class="reward-symbol">${text}</span>`;
 }
@@ -155,7 +155,7 @@ function renderQuests() {
 
   questList.innerHTML = quests.map((quest) => `
     <article class="quest-card ${quest.status}">
-      <div class="quest-index">${quest.status === 'completed' ? '✓' : `#${quest.order}`}</div>
+      <div class="quest-index">${quest.status === 'completed' ? 'OK' : `#${quest.order}`}</div>
       <div class="quest-copy">
         <div class="quest-title-row">
           <h2>${quest.title}</h2>
@@ -170,7 +170,7 @@ function renderQuests() {
           <strong>${quest.reward}</strong>
         </div>
       </div>
-      ${quest.status === 'locked' ? '<div class="locked-overlay"><span>⌑</span><em>Locked</em></div>' : ''}
+      ${quest.status === 'locked' ? '<div class="locked-overlay"><span>LOCK</span><em>Locked</em></div>' : ''}
       <div class="quest-action">${questAction(quest)}</div>
     </article>
   `).join('');

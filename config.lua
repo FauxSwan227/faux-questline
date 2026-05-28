@@ -4,6 +4,7 @@ Config.DebugCommand = true
 Config.OpenKey = 'F7'
 Config.CloseKey = 'ESCAPE'
 Config.CancelKey = 'X'
+Config.AutoOpenOnPlayerLoaded = false
 
 Config.Inventory = {
     -- ox is the default because this server uses ox_inventory.

@@ -15,12 +15,16 @@
   box-sizing: border-box;
 }
 
+html {
+  background: transparent;
+}
+
 body {
   margin: 0;
   min-height: 100vh;
   color: var(--ink);
   overflow: hidden;
-  background: #100b08;
+  background: transparent;
 }
 
 button {

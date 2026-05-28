@@ -28,6 +28,12 @@ RegisterNetEvent('faux-questline:client:close', function()
 end)
 
 RegisterNetEvent('QBCore:Client:OnPlayerLoaded', function()
+    if Config.AutoOpenOnPlayerLoaded then
+        TriggerServerEvent('faux-questline:server:requestUiData')
+    end
+end)
+
+RegisterNetEvent('faux-questline:client:tryStartIntro', function()
     TriggerServerEvent('faux-questline:server:requestUiData')
 end)
 
