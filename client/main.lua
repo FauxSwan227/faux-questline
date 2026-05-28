@@ -1,6 +1,20 @@
 local QBCore = exports['qb-core']:GetCoreObject()
 local nuiOpen = false
 local activeQuestHud = false
+local currentQuestHud = nil
+local pauseMenuHidingHud = false
+
+local function sendQuestHud(visible, quest)
+    SendNUIMessage({
+        action = 'questHud',
+        payload = {
+            visible = visible,
+            title = quest and quest.title,
+            objective = quest and (quest.objective or quest.description),
+            cancelText = quest and (('Press %s to cancel quest'):format(Config.CancelKey or 'X'))
+        }
+    })
+end
 
 local function setFocus(state)
     nuiOpen = state
@@ -18,6 +32,10 @@ end
 local function closeQuestUi()
     SendNUIMessage({ action = 'close' })
     setFocus(false)
+
+    if activeQuestHud and currentQuestHud and not IsPauseMenuActive() then
+        sendQuestHud(true, currentQuestHud)
+    end
 end
 
 RegisterNetEvent('faux-questline:client:open', function(payload)
@@ -60,23 +78,18 @@ end)
 
 RegisterNetEvent('faux-questline:client:showQuestHud', function(quest)
     activeQuestHud = true
-    SendNUIMessage({
-        action = 'questHud',
-        payload = {
-            visible = true,
-            title = quest.title,
-            objective = quest.objective or quest.description,
-            cancelText = ('Press %s to cancel quest'):format(Config.CancelKey or 'X')
-        }
-    })
+    currentQuestHud = quest
+
+    if not IsPauseMenuActive() and not nuiOpen then
+        sendQuestHud(true, currentQuestHud)
+    end
 end)
 
 RegisterNetEvent('faux-questline:client:hideQuestHud', function()
     activeQuestHud = false
-    SendNUIMessage({
-        action = 'questHud',
-        payload = { visible = false }
-    })
+    currentQuestHud = nil
+    pauseMenuHidingHud = false
+    sendQuestHud(false)
 end)
 
 RegisterNetEvent('faux-questline:client:questItemResult', function(item, hasItem)
@@ -114,6 +127,29 @@ CreateThread(function()
             end
         else
             Wait(350)
+        end
+    end
+end)
+
+CreateThread(function()
+    while true do
+        if activeQuestHud then
+            local pauseActive = IsPauseMenuActive()
+
+            if pauseActive and not pauseMenuHidingHud then
+                pauseMenuHidingHud = true
+                sendQuestHud(false)
+            elseif not pauseActive and pauseMenuHidingHud then
+                pauseMenuHidingHud = false
+
+                if not nuiOpen and currentQuestHud then
+                    sendQuestHud(true, currentQuestHud)
+                end
+            end
+
+            Wait(250)
+        else
+            Wait(750)
         end
     end
 end)

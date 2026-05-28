@@ -1,5 +1,5 @@
 const fallbackPayload = {
-  brand: { logoText: 'S', logoImage: 'img/Logo_cropped.png', product: 'Quests', version: 'V2.0 Stable' },
+  brand: { logoText: 'S', logoImage: 'img/logo.png', product: 'Quests', version: 'V2.0 Stable' },
   profile: { name: 'Avery Cross', avatarUrl: '' },
   totals: { completed: 7, total: 12 },
   categories: [
