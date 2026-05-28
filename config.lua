@@ -17,6 +17,7 @@ Config.Inventory = {
 
 Config.Brand = {
     logoText = 'S',
+    logoImage = 'img/Logo_cropped.png',
     product = 'Quests',
     version = 'V2.0 Stable'
 }

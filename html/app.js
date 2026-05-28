@@ -1,5 +1,5 @@
 const fallbackPayload = {
-  brand: { logoText: 'S', product: 'Quests', version: 'V2.0 Stable' },
+  brand: { logoText: 'S', logoImage: 'img/Logo_cropped.png', product: 'Quests', version: 'V2.0 Stable' },
   profile: { name: 'Avery Cross', avatarUrl: '' },
   totals: { completed: 7, total: 12 },
   categories: [
@@ -77,7 +77,14 @@ function normalizePayload(payload = {}) {
 
 function renderBrand(payload) {
   document.querySelectorAll('[data-logo]').forEach((node) => {
+    if (payload.brand.logoImage) {
+      node.innerHTML = `<img src="${payload.brand.logoImage}" alt="" />`;
+      node.classList.add('has-logo-image');
+      return;
+    }
+
     node.textContent = payload.brand.logoText || 'S';
+    node.classList.remove('has-logo-image');
   });
   setText('[data-product]', payload.brand.product || 'Quests');
   setText('[data-version]', payload.brand.version || 'V2.0 Stable');

@@ -31,5 +31,6 @@ files {
     'html/index.html',
     'html/app.js',
     'html/style.css',
-    'html/img/contract-bg.avif'
+    'html/img/contract-bg.avif',
+    'html/img/Logo_cropped.png'
 }
