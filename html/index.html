@@ -1,0 +1,123 @@
+<!doctype html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Questline UI</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="style.css" />
+</head>
+<body>
+    <div id="app" class="app hidden">
+        <div class="background-wash"></div>
+
+        <section id="welcome" class="screen screen-welcome active">
+            <header class="topbar">
+                <div class="brand">
+                    <div class="logo-container" data-logo>S</div>
+                    <span data-product>Quests</span>
+                </div>
+                <div class="topbar-right">
+                    <span data-version>V2.0 Stable</span>
+                    <button class="icon-button profile-icon" type="button" data-view-profile aria-label="Profile"></button>
+                </div>
+            </header>
+
+            <main class="welcome-grid">
+                <article class="poster-card liquid-glass">
+                    <div class="poster-overlay"></div>
+                    <p>"Every road through the city starts with one choice."</p>
+                </article>
+
+                <section class="welcome-copy">
+                    <p class="eyebrow">The Journey Begins</p>
+                    <h1>Welcome,<br />Wanderer.</h1>
+                    <p class="lead">Step into a guided questline system built for the city. Learn the core systems, meet the right locals, and turn your first steps into real progression.</p>
+
+                    <div class="feature-stack">
+                        <div class="feature-card liquid-glass">
+                            <span class="feature-icon">◈</span>
+                            <div>
+                                <h3>City-Guided Progress</h3>
+                                <p>Follow quests that move naturally through City Hall, jobs, apartments, contacts, and local services.</p>
+                            </div>
+                        </div>
+                        <div class="feature-card liquid-glass">
+                            <span class="feature-icon">✦</span>
+                            <div>
+                                <h3>Three Paths</h3>
+                                <p>Build your story through civilian work, law enforcement opportunities, or criminal introductions.</p>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="welcome-actions">
+                        <button class="primary-button" type="button" data-open-hub>Get Started</button>
+                        <button class="ghost-button" type="button" data-tour>System Tour <span>→</span></button>
+                    </div>
+                </section>
+            </main>
+
+            <footer class="footerline">
+                <span>Questline Engine © 2026</span>
+                <span>Questline Onboarding</span>
+            </footer>
+        </section>
+
+        <section id="hub" class="screen screen-hub">
+            <aside class="sidebar liquid-glass">
+                <div class="brand hub-brand">
+                    <div class="logo-container" data-logo>S</div>
+                    <span data-product>Quests</span>
+                </div>
+                <div class="mission-copy">
+                    <h2>Mission Hub</h2>
+                    <p><span data-completed>0</span>/<span data-total>0</span> Quests Completed</p>
+                </div>
+                <nav class="side-tabs" data-side-tabs></nav>
+            </aside>
+
+            <main class="hub-main">
+                <header class="hub-header liquid-glass">
+                    <div class="completion">
+                        <span>Total Completion</span>
+                        <strong><span data-completed>0</span>/<span data-total>0</span></strong>
+                        <em>Quests</em>
+                    </div>
+                    <div class="progress-track">
+                        <div class="progress-fill" data-progress-fill></div>
+                    </div>
+                    <nav class="status-tabs">
+                        <button type="button" class="active">Active</button>
+                        <button type="button">Completed</button>
+                        <button type="button">Rewards</button>
+                    </nav>
+                    <div class="profile-card">
+                        <span data-player-name>New Arrival</span>
+                        <div class="avatar" data-avatar></div>
+                    </div>
+                </header>
+
+                <section class="quest-panel liquid-glass">
+                    <div class="panel-heading">
+                        <p class="eyebrow">Quest Category</p>
+                        <h1 data-category-title>Civilian Quests</h1>
+                    </div>
+                    <nav class="category-tabs" data-category-tabs></nav>
+                    <div class="quest-list" data-quest-list></div>
+                </section>
+            </main>
+        </section>
+
+        <aside class="quest-hud hidden" data-quest-hud>
+            <strong data-hud-title>The Honest Worker</strong>
+            <span data-hud-objective>Complete 5 delivery shifts for Post-OP</span>
+            <em data-hud-cancel>Press X to cancel quest</em>
+        </aside>
+    </div>
+
+    <script src="app.js"></script>
+</body>
+</html>
