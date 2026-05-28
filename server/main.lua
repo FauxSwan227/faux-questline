@@ -142,3 +142,9 @@ RegisterNetEvent('faux-questline:server:hasQuestItem', function(item, amount, me
     local src = source
     TriggerClientEvent('faux-questline:client:questItemResult', src, item, Inventory.HasItem(src, item, amount, metadata))
 end)
+
+RegisterNetEvent('faux-questline:server:cancelQuest', function()
+    local src = source
+    TriggerClientEvent('faux-questline:client:hideQuestHud', src)
+    notify(src, 'Quest cancelled.', 'primary')
+end)

@@ -1,5 +1,6 @@
 local QBCore = exports['qb-core']:GetCoreObject()
 local nuiOpen = false
+local activeQuestHud = false
 
 local function setFocus(state)
     nuiOpen = state
@@ -58,6 +59,7 @@ RegisterNUICallback('claimReward', function(data, cb)
 end)
 
 RegisterNetEvent('faux-questline:client:showQuestHud', function(quest)
+    activeQuestHud = true
     SendNUIMessage({
         action = 'questHud',
         payload = {
@@ -70,6 +72,7 @@ RegisterNetEvent('faux-questline:client:showQuestHud', function(quest)
 end)
 
 RegisterNetEvent('faux-questline:client:hideQuestHud', function()
+    activeQuestHud = false
     SendNUIMessage({
         action = 'questHud',
         payload = { visible = false }
@@ -100,3 +103,17 @@ if Config.DebugCommand then
 end
 
 RegisterKeyMapping('questui', 'Open Questline UI', 'keyboard', Config.OpenKey)
+
+CreateThread(function()
+    while true do
+        if activeQuestHud and not nuiOpen then
+            Wait(0)
+
+            if IsControlJustPressed(0, 73) then
+                TriggerServerEvent('faux-questline:server:cancelQuest')
+            end
+        else
+            Wait(350)
+        end
+    end
+end)
