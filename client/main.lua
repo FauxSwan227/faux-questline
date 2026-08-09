@@ -1,19 +1,28 @@
 local QBCore = exports['qb-core']:GetCoreObject()
 local nuiOpen = false
-local activeQuestHud = false
-local currentQuestHud = nil
-local pauseMenuHidingHud = false
 
-local function sendQuestHud(visible, quest)
-    SendNUIMessage({
-        action = 'questHud',
-        payload = {
-            visible = visible,
-            title = quest and quest.title,
-            objective = quest and (quest.objective or quest.description),
-            cancelText = quest and (('Press %s to cancel quest'):format(Config.CancelKey or 'X'))
-        }
-    })
+local function notify(message, messageType)
+    TriggerEvent('QBCore:Notify', message, messageType or 'primary')
+end
+
+local function pageById(pageId)
+    for _, page in ipairs(Config.Pages) do
+        if page.id == pageId then
+            return page
+        end
+    end
+
+    return nil
+end
+
+local function buildPayload()
+    return {
+        brand = Config.Brand,
+        pages = Config.Pages,
+        keybindPages = Config.KeybindPages,
+        commandPages = Config.CommandPages,
+        faqs = Config.FAQs
+    }
 end
 
 local function setFocus(state)
@@ -21,135 +30,88 @@ local function setFocus(state)
     SetNuiFocus(state, state)
 end
 
-local function openQuestUi(payload)
+local function openOnboarding()
     SendNUIMessage({
         action = 'open',
-        payload = payload
+        payload = buildPayload()
     })
     setFocus(true)
 end
 
-local function closeQuestUi()
+local function closeOnboarding()
     SendNUIMessage({ action = 'close' })
     setFocus(false)
-
-    if activeQuestHud and currentQuestHud and not IsPauseMenuActive() then
-        sendQuestHud(true, currentQuestHud)
-    end
 end
 
-RegisterNetEvent('faux-questline:client:open', function(payload)
-    openQuestUi(payload)
+RegisterNetEvent('faux-onboard:client:open', function()
+    openOnboarding()
 end)
 
-RegisterNetEvent('faux-questline:client:close', function()
-    closeQuestUi()
+RegisterNetEvent('faux-onboard:client:close', function()
+    closeOnboarding()
 end)
 
 RegisterNetEvent('QBCore:Client:OnPlayerLoaded', function()
     if Config.AutoOpenOnPlayerLoaded then
-        TriggerServerEvent('faux-questline:server:requestUiData')
+        openOnboarding()
     end
 end)
 
-RegisterNetEvent('faux-questline:client:tryStartIntro', function()
-    TriggerServerEvent('faux-questline:server:requestUiData')
+RegisterNetEvent('faux-onboard:client:startIntro', function()
+    openOnboarding()
 end)
 
 RegisterNUICallback('close', function(_, cb)
-    closeQuestUi()
+    closeOnboarding()
     cb({ ok = true })
 end)
 
-RegisterNUICallback('getStarted', function(_, cb)
-    TriggerServerEvent('faux-questline:server:startIntroQuest')
-    cb({ ok = true })
-end)
+RegisterNUICallback('setWaypoint', function(data, cb)
+    local page = pageById(data and data.pageId)
 
-RegisterNUICallback('startQuest', function(data, cb)
-    TriggerServerEvent('faux-questline:server:startQuest', data.category, data.questId)
-    cb({ ok = true })
-end)
-
-RegisterNUICallback('claimReward', function(data, cb)
-    TriggerServerEvent('faux-questline:server:claimQuestReward', data.category, data.questId)
-    cb({ ok = true })
-end)
-
-RegisterNetEvent('faux-questline:client:showQuestHud', function(quest)
-    activeQuestHud = true
-    currentQuestHud = quest
-
-    if not IsPauseMenuActive() and not nuiOpen then
-        sendQuestHud(true, currentQuestHud)
+    if not page or not page.waypoint then
+        notify('No waypoint is available for this page.', 'error')
+        cb({ ok = false })
+        return
     end
+
+    closeOnboarding()
+    SetNewWaypoint(page.waypoint.x, page.waypoint.y)
+    notify(('Waypoint set: %s'):format(page.mapLabel or page.title), 'success')
+    cb({ ok = true })
 end)
 
-RegisterNetEvent('faux-questline:client:hideQuestHud', function()
-    activeQuestHud = false
-    currentQuestHud = nil
-    pauseMenuHidingHud = false
-    sendQuestHud(false)
+RegisterNUICallback('complete', function(_, cb)
+    closeOnboarding()
+    notify('Welcome to the city. Your journey begins now.', 'success')
+
+    if Config.CompleteEvent then
+        TriggerServerEvent(Config.CompleteEvent)
+    end
+
+    cb({ ok = true })
 end)
 
-RegisterNetEvent('faux-questline:client:questItemResult', function(item, hasItem)
-    SendNUIMessage({
-        action = 'questItemResult',
-        payload = {
-            item = item,
-            hasItem = hasItem
-        }
-    })
+RegisterNUICallback('runCommand', function(data, cb)
+    local command = data and data.command
+
+    if type(command) ~= 'string' or command == '' or command:find('%s') or command:find('^/') then
+        cb({ ok = false })
+        return
+    end
+
+    ExecuteCommand(command)
+    cb({ ok = true })
 end)
 
 if Config.DebugCommand then
-    RegisterCommand('questui', function()
-        TriggerServerEvent('faux-questline:server:requestUiData')
+    RegisterCommand('onboard', function()
+        openOnboarding()
     end, false)
 
-    RegisterCommand('questhud', function()
-        TriggerEvent('faux-questline:client:showQuestHud', {
-            title = 'The Honest Worker',
-            objective = 'Complete 5 delivery shifts for Post-OP'
-        })
+    RegisterCommand('fauxonboard', function()
+        openOnboarding()
     end, false)
 end
 
-RegisterKeyMapping('questui', 'Open Questline UI', 'keyboard', Config.OpenKey)
-
-CreateThread(function()
-    while true do
-        if activeQuestHud and not nuiOpen then
-            Wait(0)
-
-            if IsControlJustPressed(0, 73) then
-                TriggerServerEvent('faux-questline:server:cancelQuest')
-            end
-        else
-            Wait(350)
-        end
-    end
-end)
-
-CreateThread(function()
-    while true do
-        if activeQuestHud then
-            local pauseActive = IsPauseMenuActive()
-
-            if pauseActive and not pauseMenuHidingHud then
-                pauseMenuHidingHud = true
-                sendQuestHud(false)
-            elseif not pauseActive and pauseMenuHidingHud then
-                pauseMenuHidingHud = false
-
-                if not nuiOpen and currentQuestHud then
-                    sendQuestHud(true, currentQuestHud)
-                end
-            end
-
-            Wait(250)
-        else
-            Wait(750)
-        end
-    end
-end)
+RegisterKeyMapping('onboard', 'Open Onboarding UI', 'keyboard', Config.OpenKey)

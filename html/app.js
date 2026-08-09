@@ -1,51 +1,179 @@
 const fallbackPayload = {
-  brand: { logoText: 'S', logoImage: 'img/logo.png', product: 'Quests', version: 'V2.0 Stable' },
-  profile: { name: 'Avery Cross', avatarUrl: '' },
-  totals: { completed: 7, total: 12 },
-  categories: [
-    { id: 'civilian', label: 'Civilian Quests', shortLabel: 'Civilian', icon: 'user' },
-    { id: 'lea', label: 'LEA Quests', shortLabel: 'Law Enforcement', icon: 'shield' },
-    { id: 'criminal', label: 'Criminal Quests', shortLabel: 'Criminal', icon: 'skull' },
-  ],
-  quests: {
-    civilian: [
-      { id: 'fresh_off_the_boat', order: 1, title: 'Fresh Off The Boat', description: 'Visit City Hall, obtain your legal identification documents, and register your first bank account.', reward: '$2,500 Cash', rewardType: 'cash', status: 'available' },
-      { id: 'honest_worker', order: 2, title: 'The Honest Worker', description: 'Complete 5 delivery shifts for Post-OP to prove your work ethic to the local trade council.', reward: 'Panto Key', rewardType: 'vehicle', status: 'current' },
-      { id: 'settling_in', order: 3, title: 'Settling In', description: 'Purchase your first clothing items from Binco to fit in with the local population.', reward: '50 XP', rewardType: 'xp', status: 'completed' },
-      { id: 'new_perspective', order: 4, title: 'A New Perspective', description: 'Unlock the city by meeting helpful locals around the Golden Station.', reward: 'Mystery Crate', rewardType: 'crate', status: 'locked' },
-      { id: 'first_account', order: 5, title: 'First Account', description: 'Visit a bank teller and learn where paychecks, fines, and transfers are handled.', reward: 'Bank Bonus', rewardType: 'cash', status: 'locked' },
-      { id: 'street_smart', order: 6, title: 'Street Smart', description: 'Talk to three city service NPCs and learn which systems they connect to.', reward: 'City Map', rewardType: 'item', status: 'locked' },
-    ],
-    lea: [
-      { id: 'public_service', order: 1, title: 'Public Service', description: 'Meet a recruiter, learn department basics, and collect your application packet.', reward: 'Application Access', rewardType: 'access', status: 'available' },
-      { id: 'ride_along', order: 2, title: 'Ride Along', description: 'Complete a supervised patrol route and report back to the station mentor.', reward: 'Cadet Badge', rewardType: 'badge', status: 'locked' },
-    ],
-    criminal: [
-      { id: 'whispers', order: 1, title: 'Whispers In The Alley', description: 'Find a street contact near the old motel and learn how reputation gates illegal work.', reward: 'Contact Number', rewardType: 'contact', status: 'available' },
-      { id: 'dirty_errand', order: 2, title: 'Dirty Errand', description: 'Move a sealed package without attracting attention.', reward: '$1,200 Dirty Cash', rewardType: 'cash', status: 'locked' },
-    ],
+  brand: {
+    logoText: 'F',
+    logoImage: 'img/logo.png',
+    product: 'Onboard',
+    version: 'City Guide',
   },
+  pages: [
+    {
+      id: 'arrival',
+      eyebrow: 'First Steps',
+      title: 'Welcome to the City',
+      subtitle: 'Start here after creating your character.',
+      body: 'This guide gives you the essentials before you step out and begin your story.',
+      locationLabel: 'Airport Arrival',
+      mapLabel: 'Los Santos International',
+      locationImage: 'img/contract-bg.avif',
+      mapImage: 'img/map-placeholder.svg',
+      final: false,
+    },
+    {
+      id: 'cityhall',
+      eyebrow: 'Identity',
+      title: 'Visit City Hall',
+      subtitle: 'Collect documents, licenses, and civic services.',
+      body: 'City Hall is where new residents handle official paperwork. Use it to understand identification, licensing, legal registration, and other important civilian systems.',
+      locationLabel: 'City Hall',
+      mapLabel: 'Downtown Marker',
+      locationImage: 'img/contract-bg.avif',
+      mapImage: 'img/map-placeholder.svg',
+      final: false,
+    },
+    {
+      id: 'apartments',
+      eyebrow: 'Housing',
+      title: 'Find Your First Home',
+      subtitle: 'Apartments give your character a place to settle.',
+      body: 'Starter apartments or housing systems help you store items, change outfits, and establish a personal base. If starter apartments are disabled, follow staff guidance for your first housing option.',
+      locationLabel: 'Apartment Desk',
+      mapLabel: 'Housing Area',
+      locationImage: 'img/contract-bg.avif',
+      mapImage: 'img/map-placeholder.svg',
+      final: false,
+    },
+    {
+      id: 'jobs',
+      eyebrow: 'Work',
+      title: 'Choose Early Jobs',
+      subtitle: 'Legal jobs are the easiest way to learn the economy.',
+      body: 'Starter work introduces routes, payouts, city locations, and useful roleplay loops. Try simple jobs first before moving into deeper careers, whitelisted roles, or risky opportunities.',
+      locationLabel: 'Job Center',
+      mapLabel: 'Employment Marker',
+      locationImage: 'img/contract-bg.avif',
+      mapImage: 'img/map-placeholder.svg',
+      final: false,
+    },
+    {
+      id: 'services',
+      eyebrow: 'Essentials',
+      title: 'Use City Services',
+      subtitle: 'Phone, banking, shops, garages, and support systems.',
+      body: 'Your phone, bank account, vehicle access, shops, and public service contacts will carry most day-to-day interactions. Learn these early and the rest of the city becomes much easier to navigate.',
+      locationLabel: 'Service District',
+      mapLabel: 'Central Services',
+      locationImage: 'img/contract-bg.avif',
+      mapImage: 'img/map-placeholder.svg',
+      final: false,
+    },
+    {
+      id: 'journey',
+      eyebrow: 'Begin',
+      title: 'Start Your Journey',
+      subtitle: 'You now have the foundation.',
+      body: 'Explore at your own pace, ask questions in character, and let your story build naturally.',
+      locationLabel: 'Open City',
+      mapLabel: 'Your Next Destination',
+      locationImage: 'img/contract-bg.avif',
+      mapImage: 'img/map-placeholder.svg',
+      final: true,
+    },
+  ],
+  keybindPages: [
+    {
+      title: 'Movement',
+      items: [
+        { keys: ['W', 'A', 'S', 'D'], title: 'Move', description: 'Walk, strafe, and back up your character.' },
+        { keys: ['Shift'], title: 'Sprint', description: 'Hold while moving to run.' },
+        { keys: ['Space'], title: 'Jump', description: 'Hop over low obstacles.' },
+        { keys: ['Ctrl'], title: 'Crouch', description: 'Toggle a lower stance where supported.' },
+        { keys: ['F'], title: 'Enter Vehicle', description: 'Get in or out of nearby vehicles.' },
+        { keys: ['B'], title: 'Point', description: 'Use a quick pointing animation.' },
+      ],
+    },
+    {
+      title: 'Interaction',
+      items: [
+        { keys: ['Alt'], title: 'Target Eye', description: 'Look at nearby objects, people, and doors for interactions.' },
+        { keys: ['E'], title: 'Interact', description: 'Use prompts, doors, pickups, and service points.' },
+        { keys: ['I'], title: 'Inventory', description: 'Open your carried items.' },
+        { keys: ['M'], title: 'Phone', description: 'Open phone apps and contacts.' },
+        { keys: ['K'], title: 'Menu', description: 'Open the personal action menu.' },
+        { keys: ['T'], title: 'Chat', description: 'Focus the chat input.' },
+      ],
+    },
+  ],
+  commandPages: [
+    {
+      title: 'Quick Commands',
+      items: [
+        { command: '/help', description: 'Open the help menu.', requiresParameters: false },
+        { command: '/hud', description: 'Toggle or adjust HUD settings.', requiresParameters: false },
+        { command: '/id', description: 'Show your server ID.', requiresParameters: false },
+        { command: '/report', description: 'Contact staff. Requires a message after the command.', requiresParameters: true },
+        { command: '/me', description: 'Describe an in-character action. Requires text.', requiresParameters: true },
+        { command: '/do', description: 'Describe scene details. Requires text.', requiresParameters: true },
+      ],
+    },
+    {
+      title: 'Roleplay Basics',
+      items: [
+        { command: '/ooc', description: 'Send an out-of-character message. Requires text.', requiresParameters: true },
+        { command: '/cash', description: 'Check carried cash where supported.', requiresParameters: false },
+        { command: '/bank', description: 'Check bank balance where supported.', requiresParameters: false },
+        { command: '/emotes', description: 'Open the emote menu.', requiresParameters: false },
+        { command: '/e', description: 'Play an emote. Requires an emote name.', requiresParameters: true },
+        { command: '/clear', description: 'Clear your chat window.', requiresParameters: false },
+      ],
+    },
+  ],
+  faqs: [
+    {
+      question: 'Where should I go first?',
+      answer: 'Start with City Hall, then learn your phone, inventory, banking, and garage options before chasing bigger goals.',
+    },
+    {
+      question: 'How do I get help from staff?',
+      answer: 'Use the configured report command with a clear message, or follow your community Discord support flow.',
+    },
+    {
+      question: 'What should I do if a command needs parameters?',
+      answer: 'Open chat, type the command, add the needed text or value, then submit it manually.',
+    },
+    {
+      question: 'Why are some commands clickable and others not?',
+      answer: 'Only commands that can safely run without extra text are clickable from this guide.',
+    },
+    {
+      question: 'Can server owners edit this content?',
+      answer: 'Yes. The tabs are fed from config, so keybinds, commands, and FAQs can be adjusted for your city.',
+    },
+  ],
 };
 
 let state = {
   payload: fallbackPayload,
-  selectedCategory: 'civilian',
+  index: 0,
+  activeTab: 'guide',
+  infoIndexes: {
+    keybinds: 0,
+    commands: 0,
+  },
 };
 
 const app = document.querySelector('#app');
-const welcome = document.querySelector('#welcome');
-const hub = document.querySelector('#hub');
-const questList = document.querySelector('[data-quest-list]');
-const categoryTabs = document.querySelector('[data-category-tabs]');
-const sideTabs = document.querySelector('[data-side-tabs]');
-const avatar = document.querySelector('[data-avatar]');
-
-const icons = {
-  user: '<svg viewBox="0 0 24 24"><path d="M20 21a8 8 0 0 0-16 0"/><circle cx="12" cy="7" r="4"/></svg>',
-  shield: '<svg viewBox="0 0 24 24"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10Z"/></svg>',
-  skull: '<svg viewBox="0 0 24 24"><path d="M8 17v-1a4 4 0 0 1-2-3.5C6 8.9 8.7 6 12 6s6 2.9 6 6.5A4 4 0 0 1 16 16v1"/><path d="M9 22v-3h6v3"/><path d="M9.5 12h.01M14.5 12h.01"/></svg>',
-  fallbackAvatar: '<svg viewBox="0 0 24 24"><circle cx="12" cy="8" r="4"/><path d="M4 22a8 8 0 0 1 16 0"/></svg>',
-};
+const logoNodes = document.querySelectorAll('[data-logo]');
+const dots = document.querySelector('[data-dots]');
+const prevButton = document.querySelector('[data-prev]');
+const nextButton = document.querySelector('[data-next]');
+const completeButton = document.querySelector('[data-complete]');
+const tabButtons = document.querySelectorAll('[data-tab]');
+const panels = document.querySelectorAll('[data-panel]');
+const keybindList = document.querySelector('[data-keybind-list]');
+const commandList = document.querySelector('[data-command-list]');
+const faqList = document.querySelector('[data-faq-list]');
+const keybindSwitcher = document.querySelector('[data-keybind-switcher]');
+const commandSwitcher = document.querySelector('[data-command-switcher]');
 
 function nui(name, data = {}) {
   if (typeof GetParentResourceName !== 'function') return;
@@ -57,186 +185,293 @@ function nui(name, data = {}) {
   }).catch(() => {});
 }
 
-function setText(selector, value) {
-  document.querySelectorAll(selector).forEach((node) => {
-    node.textContent = value;
-  });
-}
-
 function normalizePayload(payload = {}) {
   return {
     ...fallbackPayload,
     ...payload,
     brand: { ...fallbackPayload.brand, ...(payload.brand || {}) },
-    profile: { ...fallbackPayload.profile, ...(payload.profile || {}) },
-    totals: { ...fallbackPayload.totals, ...(payload.totals || {}) },
-    categories: payload.categories || fallbackPayload.categories,
-    quests: payload.quests || fallbackPayload.quests,
+    pages: payload.pages && payload.pages.length ? payload.pages : fallbackPayload.pages,
+    keybindPages: payload.keybindPages && payload.keybindPages.length ? payload.keybindPages : fallbackPayload.keybindPages,
+    commandPages: payload.commandPages && payload.commandPages.length ? payload.commandPages : fallbackPayload.commandPages,
+    faqs: payload.faqs && payload.faqs.length ? payload.faqs : fallbackPayload.faqs,
   };
 }
 
-function renderBrand(payload) {
-  document.querySelectorAll('[data-logo]').forEach((node) => {
-    if (payload.brand.logoImage) {
-      node.innerHTML = `<img src="${payload.brand.logoImage}" alt="" />`;
+function escapeHtml(value = '') {
+  return String(value)
+    .replace(/&/g, '&amp;')
+    .replace(/</g, '&lt;')
+    .replace(/>/g, '&gt;')
+    .replace(/"/g, '&quot;')
+    .replace(/'/g, '&#39;');
+}
+
+function setText(selector, value) {
+  document.querySelectorAll(selector).forEach((node) => {
+    node.textContent = value || '';
+  });
+}
+
+function normalizeAssetPath(path = '') {
+  return String(path)
+    .replace(/\\/g, '/')
+    .replace(/^\.?\//, '')
+    .replace(/^html\//, '');
+}
+
+function setVisual(selector, image) {
+  const node = document.querySelector(selector);
+  if (!node) return;
+
+  const src = normalizeAssetPath(image);
+  node.onerror = () => console.error(`[faux-onboard] Failed to load image: ${src}`);
+  node.src = src;
+}
+
+function renderBrand() {
+  const { brand } = state.payload;
+
+  logoNodes.forEach((node) => {
+    if (brand.logoImage) {
+      const src = normalizeAssetPath(brand.logoImage);
+      node.innerHTML = `<img src="${src}" alt="" onerror="console.error('[faux-onboard] Failed to load logo: ${src}')" />`;
       node.classList.add('has-logo-image');
       return;
     }
 
-    node.textContent = payload.brand.logoText || 'S';
+    node.textContent = brand.logoText || 'F';
     node.classList.remove('has-logo-image');
   });
-  setText('[data-product]', payload.brand.product || 'Quests');
-  setText('[data-version]', payload.brand.version || 'V2.0 Stable');
+
+  setText('[data-product]', brand.product || 'Onboard');
+  setText('[data-version]', brand.version || 'City Guide');
 }
 
-function renderProfile(payload) {
-  setText('[data-player-name]', payload.profile.name || 'New Arrival');
-  if (payload.profile.avatarUrl) {
-    avatar.style.backgroundImage = `url("${payload.profile.avatarUrl}")`;
-    avatar.innerHTML = '';
-    avatar.classList.add('has-image');
-    return;
-  }
-
-  avatar.style.backgroundImage = '';
-  avatar.innerHTML = icons.fallbackAvatar;
-  avatar.classList.remove('has-image');
-}
-
-function renderTotals(payload) {
-  const completed = Number(payload.totals.completed || 0);
-  const total = Number(payload.totals.total || 0);
-  const percent = total > 0 ? Math.min(100, Math.round((completed / total) * 100)) : 0;
-  setText('[data-completed]', completed);
-  setText('[data-total]', total);
-  document.querySelector('[data-progress-fill]').style.width = `${percent}%`;
+function renderDots() {
+  dots.innerHTML = state.payload.pages.map((_, index) => {
+    const active = index === state.index ? 'active' : '';
+    return `<button class="${active}" type="button" data-dot="${index}" aria-label="Go to slide ${index + 1}"></button>`;
+  }).join('');
 }
 
 function renderTabs() {
-  const tabs = state.payload.categories.map((category) => {
-    const active = category.id === state.selectedCategory ? 'active' : '';
-    return `<button class="${active}" type="button" data-category="${category.id}">${category.label}</button>`;
-  }).join('');
+  tabButtons.forEach((button) => {
+    button.classList.toggle('active', button.dataset.tab === state.activeTab);
+  });
 
-  const side = state.payload.categories.map((category) => {
-    const active = category.id === state.selectedCategory ? 'active' : '';
+  panels.forEach((panel) => {
+    panel.classList.toggle('hidden', panel.dataset.panel !== state.activeTab);
+  });
+}
+
+function renderSwitcher(target, tab, total) {
+  if (!target || total <= 0) return;
+
+  const current = state.infoIndexes[tab] || 0;
+  target.innerHTML = `
+    <button class="switch-button" type="button" data-info-prev="${tab}" ${current === 0 ? 'disabled' : ''} aria-label="Previous page">&lt;</button>
+    <span class="switch-count">${current + 1}/${total}</span>
+    <button class="switch-button" type="button" data-info-next="${tab}" ${current >= total - 1 ? 'disabled' : ''} aria-label="Next page">&gt;</button>
+  `;
+}
+
+function renderKeybinds() {
+  const pages = state.payload.keybindPages;
+  const page = pages[state.infoIndexes.keybinds] || pages[0];
+  if (!keybindList || !page) return;
+
+  keybindList.innerHTML = (page.items || []).map((item) => {
+    const keys = (item.keys || []).map((key, index) => {
+      const joiner = index > 0 ? '<span class="keycap joiner">+</span>' : '';
+      return `${joiner}<span class="keycap">${escapeHtml(key)}</span>`;
+    }).join('');
+
     return `
-      <button class="${active}" type="button" data-category="${category.id}">
-        ${icons[category.icon] || icons.user}
-        <span>${category.shortLabel || category.label}</span>
-      </button>
+      <article class="keybind-item">
+        <div class="keycap-row" aria-label="${escapeHtml((item.keys || []).join(' plus '))}">${keys}</div>
+        <div class="keybind-copy">
+          <strong>${escapeHtml(item.title)}</strong>
+          <span>${escapeHtml(item.description)}</span>
+        </div>
+      </article>
     `;
   }).join('');
 
-  categoryTabs.innerHTML = tabs;
-  sideTabs.innerHTML = side;
+  renderSwitcher(keybindSwitcher, 'keybinds', pages.length);
 }
 
-function rewardIcon(type) {
-  const text = {
-    cash: '$',
-    vehicle: 'V',
-    xp: 'XP',
-    crate: 'BOX',
-    access: 'ID',
-    badge: '*',
-    contact: '#',
-    item: 'ITEM',
-  }[type] || '*';
-
-  return `<span class="reward-symbol">${text}</span>`;
+function commandName(command = '') {
+  return command.replace(/^\//, '').split(/\s+/)[0];
 }
 
-function questAction(quest) {
-  if (quest.status === 'completed') return '<button class="muted-button" type="button" disabled>Completed</button>';
-  if (quest.status === 'locked') return '<button class="muted-button" type="button" disabled>Locked</button>';
-  if (quest.status === 'current') return '<button class="muted-button resuming" type="button" disabled><span></span> Resuming...</button>';
-  return `<button class="primary-button compact" type="button" data-start-quest="${quest.id}">Start Quest</button>`;
-}
+function renderCommands() {
+  const pages = state.payload.commandPages;
+  const page = pages[state.infoIndexes.commands] || pages[0];
+  if (!commandList || !page) return;
 
-function renderQuests() {
-  const category = state.payload.categories.find((item) => item.id === state.selectedCategory) || state.payload.categories[0];
-  const quests = state.payload.quests[state.selectedCategory] || [];
-  document.querySelector('[data-category-title]').textContent = category.label;
+  commandList.innerHTML = (page.items || []).map((item, index) => {
+    const locked = item.requiresParameters ? 'disabled' : '';
+    const actionText = item.requiresParameters ? 'Needs parameters' : 'Click to run';
 
-  questList.innerHTML = quests.map((quest) => `
-    <article class="quest-card ${quest.status}">
-      <div class="quest-index">${quest.status === 'completed' ? 'OK' : `#${quest.order}`}</div>
-      <div class="quest-copy">
-        <div class="quest-title-row">
-          <h2>${quest.title}</h2>
-          ${quest.status === 'current' ? '<span class="pill">Current</span>' : ''}
+    return `
+      <article class="command-item">
+        <div class="command-tile">${escapeHtml(item.command)}</div>
+        <div class="command-copy">
+          <div>
+            <strong>${escapeHtml(item.description)}</strong>
+          </div>
+          <button class="command-run-button" type="button" data-command-index="${index}" ${locked}>${actionText}</button>
         </div>
-        <p>${quest.description}</p>
-      </div>
-      <div class="reward-card">
-        ${rewardIcon(quest.rewardType)}
-        <div>
-          <span>${quest.status === 'completed' ? 'Reward Claimed' : 'Reward'}</span>
-          <strong>${quest.reward}</strong>
-        </div>
-      </div>
-      ${quest.status === 'locked' ? '<div class="locked-overlay"><span>LOCK</span><em>Locked</em></div>' : ''}
-      <div class="quest-action">${questAction(quest)}</div>
+      </article>
+    `;
+  }).join('');
+
+  renderSwitcher(commandSwitcher, 'commands', pages.length);
+}
+
+function renderFaqs() {
+  if (!faqList) return;
+
+  faqList.innerHTML = state.payload.faqs.map((item) => `
+    <article class="faq-item">
+      <h2>${escapeHtml(item.question)}</h2>
+      <p>${escapeHtml(item.answer)}</p>
     </article>
   `).join('');
 }
 
+function renderSlide() {
+  const pages = state.payload.pages;
+  const page = pages[state.index];
+  const isFinal = page.final || state.index === pages.length - 1;
+
+  setText('[data-current]', state.index + 1);
+  setText('[data-total]', pages.length);
+  document.querySelector('[data-progress-fill]').style.width = `${((state.index + 1) / pages.length) * 100}%`;
+
+  setText('[data-eyebrow]', page.eyebrow);
+  setText('[data-title]', page.title);
+  setText('[data-subtitle]', page.subtitle);
+  setText('[data-body]', page.body);
+  setText('[data-location-label]', page.locationLabel);
+  setText('[data-map-label]', page.mapLabel);
+
+  setVisual('[data-location-image]', page.locationImage);
+  setVisual('[data-map-image]', page.mapImage);
+
+  prevButton.disabled = state.index === 0;
+  nextButton.classList.toggle('hidden', isFinal);
+  completeButton.classList.toggle('hidden', !isFinal);
+
+  renderDots();
+}
+
 function render(payload) {
   state.payload = normalizePayload(payload);
-  state.selectedCategory = state.payload.categories[0]?.id || 'civilian';
-  renderBrand(state.payload);
-  renderProfile(state.payload);
-  renderTotals(state.payload);
+  state.index = 0;
+  state.infoIndexes.keybinds = 0;
+  state.infoIndexes.commands = 0;
+  renderBrand();
+  renderSlide();
+  renderKeybinds();
+  renderCommands();
+  renderFaqs();
   renderTabs();
-  renderQuests();
 }
 
-function showHub() {
-  welcome.classList.remove('active');
-  hub.classList.add('active');
+function close() {
+  app.classList.add('hidden');
+  nui('close');
 }
 
-function showWelcome() {
-  hub.classList.remove('active');
-  welcome.classList.add('active');
+function next() {
+  if (state.index < state.payload.pages.length - 1) {
+    state.index += 1;
+    renderSlide();
+  }
+}
+
+function prev() {
+  if (state.index > 0) {
+    state.index -= 1;
+    renderSlide();
+  }
 }
 
 document.addEventListener('click', (event) => {
-  const categoryButton = event.target.closest('[data-category]');
-  if (categoryButton) {
-    state.selectedCategory = categoryButton.dataset.category;
+  const tab = event.target.closest('[data-tab]');
+  if (tab) {
+    state.activeTab = tab.dataset.tab;
     renderTabs();
-    renderQuests();
     return;
   }
 
-  if (event.target.closest('[data-open-hub]')) {
-    nui('getStarted');
-    showHub();
+  if (event.target.closest('[data-close]')) {
+    close();
     return;
   }
 
-  if (event.target.closest('[data-tour]')) {
-    showHub();
+  if (event.target.closest('[data-next]')) {
+    next();
     return;
   }
 
-  const startQuest = event.target.closest('[data-start-quest]');
-  if (startQuest) {
-    nui('startQuest', {
-      category: state.selectedCategory,
-      questId: startQuest.dataset.startQuest,
-    });
+  if (event.target.closest('[data-prev]')) {
+    prev();
+    return;
+  }
+
+  if (event.target.closest('[data-complete]')) {
+    app.classList.add('hidden');
+    nui('complete');
+    return;
+  }
+
+  if (event.target.closest('[data-map-click]')) {
+    const page = state.payload.pages[state.index];
+    app.classList.add('hidden');
+    nui('setWaypoint', { pageId: page.id });
+    return;
+  }
+
+  const dot = event.target.closest('[data-dot]');
+  if (dot) {
+    state.index = Number(dot.dataset.dot);
+    renderSlide();
+    return;
+  }
+
+  const infoPrev = event.target.closest('[data-info-prev]');
+  if (infoPrev) {
+    const tabName = infoPrev.dataset.infoPrev;
+    state.infoIndexes[tabName] = Math.max(0, state.infoIndexes[tabName] - 1);
+    tabName === 'keybinds' ? renderKeybinds() : renderCommands();
+    return;
+  }
+
+  const infoNext = event.target.closest('[data-info-next]');
+  if (infoNext) {
+    const tabName = infoNext.dataset.infoNext;
+    const list = tabName === 'keybinds' ? state.payload.keybindPages : state.payload.commandPages;
+    state.infoIndexes[tabName] = Math.min(list.length - 1, state.infoIndexes[tabName] + 1);
+    tabName === 'keybinds' ? renderKeybinds() : renderCommands();
+    return;
+  }
+
+  const commandButton = event.target.closest('[data-command-index]');
+  if (commandButton) {
+    const page = state.payload.commandPages[state.infoIndexes.commands];
+    const item = page && page.items ? page.items[Number(commandButton.dataset.commandIndex)] : null;
+    if (!item || item.requiresParameters) return;
+
+    nui('runCommand', { command: commandName(item.command) });
   }
 });
 
 document.addEventListener('keyup', (event) => {
-  if (event.key === 'Escape') {
-    nui('close');
-    app.classList.add('hidden');
-  }
+  if (event.key === 'Escape') close();
+  if (event.key === 'ArrowRight') next();
+  if (event.key === 'ArrowLeft') prev();
 });
 
 window.addEventListener('message', (event) => {
@@ -245,28 +480,15 @@ window.addEventListener('message', (event) => {
   if (action === 'open') {
     render(payload);
     app.classList.remove('hidden');
-    showWelcome();
   }
 
   if (action === 'close') {
     app.classList.add('hidden');
   }
-
-  if (action === 'questHud') {
-    const hud = document.querySelector('[data-quest-hud]');
-    if (!payload?.visible) {
-      hud.classList.add('hidden');
-      return;
-    }
-    document.querySelector('[data-hud-title]').textContent = payload.title;
-    document.querySelector('[data-hud-objective]').textContent = payload.objective;
-    document.querySelector('[data-hud-cancel]').textContent = payload.cancelText;
-    hud.classList.remove('hidden');
-  }
 });
 
 render(fallbackPayload);
 
-if (location.protocol === 'file:' || location.hostname === 'localhost' || location.hostname === '127.0.0.1') {
+if (location.hostname === 'localhost' || location.hostname === '127.0.0.1') {
   app.classList.remove('hidden');
 }

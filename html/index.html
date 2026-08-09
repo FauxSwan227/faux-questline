@@ -3,121 +3,110 @@
 <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>Questline UI</title>
+    <title>Faux Onboard</title>
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=Inter:wght@400;500;600;700;800;900&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="style.css" />
 </head>
 <body>
-    <div id="app" class="app hidden">
+    <main id="app" class="app hidden">
         <div class="background-wash"></div>
 
-        <section id="welcome" class="screen screen-welcome active">
-            <header class="topbar">
-                <div class="brand">
-                    <div class="logo-container" data-logo></div>
-                    <span data-product>Quests</span>
-                </div>
-                <div class="topbar-right">
-                    <span data-version>V2.0 Stable</span>
-                    <button class="icon-button profile-icon" type="button" data-view-profile aria-label="Profile"></button>
-                </div>
-            </header>
+        <header class="topbar">
+            <div class="brand">
+                <div class="logo-container" data-logo></div>
+                <span data-product>Onboard</span>
+            </div>
+            <nav class="tab-nav" aria-label="Information tabs">
+                <button class="tab-button active" type="button" data-tab="guide">Guide</button>
+                <button class="tab-button" type="button" data-tab="keybinds">Keybinds</button>
+                <button class="tab-button" type="button" data-tab="commands">Commands</button>
+                <button class="tab-button" type="button" data-tab="faq">FAQ</button>
+            </nav>
+            <div class="topbar-right">
+                <span data-version>City Guide</span>
+                <button class="icon-button close-button" type="button" data-close aria-label="Close"></button>
+            </div>
+        </header>
 
-            <main class="welcome-grid">
-                <article class="poster-card liquid-glass">
-                    <div class="poster-overlay"></div>
-                    <p>"Every road through the city starts with one choice."</p>
+        <section class="onboard-shell liquid-glass" data-panel="guide">
+            <div class="progress-row">
+                <div>
+                    <span class="progress-label">Onboarding</span>
+                    <strong><span data-current>1</span>/<span data-total>1</span></strong>
+                </div>
+                <div class="progress-track">
+                    <div class="progress-fill" data-progress-fill></div>
+                </div>
+            </div>
+
+            <section class="slide-grid">
+                <article class="visual-card" data-visual-card>
+                    <button class="visual-half location-half" type="button" aria-label="Location image">
+                        <img data-location-image alt="" />
+                    </button>
+                    <button class="visual-half map-half" type="button" data-map-click aria-label="Set waypoint from map image">
+                        <img data-map-image alt="" />
+                    </button>
+                    <div class="visual-label location-label" data-location-label>Location</div>
+                    <div class="visual-label map-label" data-map-label>Map</div>
                 </article>
 
-                <section class="welcome-copy">
-                    <p class="eyebrow">The Journey Begins</p>
-                    <h1>Welcome,<br />Wanderer.</h1>
-                    <p class="lead">Step into a guided questline system built for the city. Learn the core systems, meet the right locals, and turn your first steps into real progression.</p>
-
-                    <div class="feature-stack">
-                        <div class="feature-card liquid-glass">
-                            <span class="feature-icon">◈</span>
-                            <div>
-                                <h3>City-Guided Progress</h3>
-                                <p>Follow quests that move naturally through City Hall, jobs, apartments, contacts, and local services.</p>
-                            </div>
-                        </div>
-                        <div class="feature-card liquid-glass">
-                            <span class="feature-icon">✦</span>
-                            <div>
-                                <h3>Three Paths</h3>
-                                <p>Build your story through civilian work, law enforcement opportunities, or criminal introductions.</p>
-                            </div>
-                        </div>
+                <article class="copy-panel">
+                    <p class="eyebrow" data-eyebrow>First Steps</p>
+                    <h1 data-title>Welcome to the City</h1>
+                    <p class="subtitle" data-subtitle>Start here after creating your character.</p>
+                    <p class="body-copy" data-body></p>
+                    <div class="hint-card liquid-glass">
+                        <span>Map Tip</span>
+                        <p>Click the map side of the image to close this guide and set a GPS waypoint.</p>
                     </div>
+                </article>
+            </section>
 
-                    <div class="welcome-actions">
-                        <button class="primary-button" type="button" data-open-hub>Get Started</button>
-                        <button class="ghost-button" type="button" data-tour>System Tour <span>→</span></button>
-                    </div>
-                </section>
-            </main>
-
-            <footer class="footerline">
-                <span>Questline Engine © 2026</span>
-                <span>Questline Onboarding</span>
+            <footer class="slide-footer">
+                <div class="dot-row" data-dots></div>
+                <div class="nav-actions">
+                    <button class="ghost-button" type="button" data-prev>Previous</button>
+                    <button class="primary-button" type="button" data-next>Next</button>
+                    <button class="journey-button hidden" type="button" data-complete>Start Your Journey!</button>
+                </div>
             </footer>
         </section>
 
-        <section id="hub" class="screen screen-hub">
-            <aside class="sidebar liquid-glass">
-                <div class="brand hub-brand">
-                    <div class="logo-container" data-logo></div>
-                    <span data-product>Quests</span>
-                </div>
-                <div class="mission-copy">
-                    <h2>Mission Hub</h2>
-                    <p><span data-completed>0</span>/<span data-total>0</span> Quests Completed</p>
-                </div>
-                <nav class="side-tabs" data-side-tabs></nav>
-            </aside>
-
-            <main class="hub-main">
-                <header class="hub-header liquid-glass">
-                    <div class="completion">
-                        <span>Total Completion</span>
-                        <strong><span data-completed>0</span>/<span data-total>0</span></strong>
-                        <em>Quests</em>
-                    </div>
-                    <div class="progress-track">
-                        <div class="progress-fill" data-progress-fill></div>
-                    </div>
-                    <nav class="status-tabs">
-                        <button type="button" class="active">Active</button>
-                        <button type="button">Completed</button>
-                        <button type="button">Rewards</button>
-                    </nav>
-                    <div class="profile-card">
-                        <span data-player-name>New Arrival</span>
-                        <div class="avatar" data-avatar></div>
-                    </div>
-                </header>
-
-                <section class="quest-panel liquid-glass">
-                    <div class="panel-heading">
-                        <p class="eyebrow">Quest Category</p>
-                        <h1 data-category-title>Civilian Quests</h1>
-                    </div>
-                    <nav class="category-tabs" data-category-tabs></nav>
-                    <div class="quest-list" data-quest-list></div>
-                </section>
-            </main>
+        <section class="info-shell liquid-glass hidden" data-panel="keybinds">
+            <div class="info-background"></div>
+            <div class="info-header">
+                <p class="eyebrow">Controls</p>
+                <h1>Default Keybinds</h1>
+                <p>Quick reference for the core keys new players tend to need first.</p>
+            </div>
+            <div class="info-content keybind-grid" data-keybind-list></div>
+            <div class="info-switcher" data-keybind-switcher></div>
         </section>
 
-    </div>
+        <section class="info-shell liquid-glass hidden" data-panel="commands">
+            <div class="info-background"></div>
+            <div class="info-header">
+                <p class="eyebrow">Chat Tools</p>
+                <h1>Basic Commands</h1>
+                <p>Click parameterless commands to run them. Commands that need extra text stay as references.</p>
+            </div>
+            <div class="info-content command-list" data-command-list></div>
+            <div class="info-switcher" data-command-switcher></div>
+        </section>
 
-    <aside class="quest-hud hidden" data-quest-hud>
-        <strong data-hud-title>The Honest Worker</strong>
-        <span data-hud-objective>Complete 5 delivery shifts for Post-OP</span>
-        <em data-hud-cancel>Press X to cancel quest</em>
-    </aside>
+        <section class="info-shell faq-shell liquid-glass hidden" data-panel="faq">
+            <div class="info-background"></div>
+            <div class="info-header">
+                <p class="eyebrow">Help Desk</p>
+                <h1>FAQs</h1>
+                <p>Scrollable answers for common onboarding questions.</p>
+            </div>
+            <div class="faq-list" data-faq-list></div>
+        </section>
+    </main>
 
     <script src="app.js"></script>
 </body>
