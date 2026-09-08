@@ -351,7 +351,7 @@ Config.Chapters = {
         phase = 'Beta Phase',
         title = 'The Beta Begins',
         description = 'The first chapter of RadiantCoast is where the city opens its doors, its stories begin, and the community helps shape what comes next.',
-        coverImage = 'img/contract-bg.avif',
+        coverImage = 'img/rdc_beta.png',
         additions = {
             'RadiantCoast Beta is now live.',
             'Core city systems and starter experiences are available to explore.',
