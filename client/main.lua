@@ -15,13 +15,22 @@ local function pageById(pageId)
     return nil
 end
 
+local function hasCompletedOnboarding()
+    local playerData = QBCore.Functions.GetPlayerData()
+    local metadata = playerData and playerData.metadata or {}
+
+    return metadata[Config.OnboardingMetadataKey] == true
+end
+
 local function buildPayload()
     return {
         brand = Config.Brand,
         pages = Config.Pages,
         keybindPages = Config.KeybindPages,
         commandPages = Config.CommandPages,
-        faqs = Config.FAQs
+        faqs = Config.FAQs,
+        chapters = Config.Chapters,
+        initialTab = hasCompletedOnboarding() and 'chapters' or 'guide'
     }
 end
 
@@ -84,6 +93,8 @@ end)
 RegisterNUICallback('complete', function(_, cb)
     closeOnboarding()
     notify('Welcome to the city. Your journey begins now.', 'success')
+
+    TriggerServerEvent('faux-onboard:server:completeOnboarding')
 
     if Config.CompleteEvent then
         TriggerServerEvent(Config.CompleteEvent)

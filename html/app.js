@@ -149,11 +149,25 @@ const fallbackPayload = {
       answer: 'Yes. The tabs are fed from config, so keybinds, commands, and FAQs can be adjusted for your city.',
     },
   ],
+  chapters: [
+    {
+      id: 'chapter-0',
+      label: 'RadiantCoast Chapter 0',
+      phase: 'Beta Phase',
+      title: 'The Beta Begins',
+      description: 'The first chapter of RadiantCoast is where the city opens its doors, its stories begin, and the community helps shape what comes next.',
+      coverImage: 'img/contract-bg.avif',
+      additions: ['RadiantCoast Beta is now live.'],
+      changes: ['This chapter establishes the foundation for future city updates.'],
+      fixes: ['Beta fixes and balance improvements will be documented here as they ship.'],
+    },
+  ],
 };
 
 let state = {
   payload: fallbackPayload,
   index: 0,
+  chapterIndex: 0,
   activeTab: 'guide',
   infoIndexes: {
     keybinds: 0,
@@ -174,6 +188,8 @@ const commandList = document.querySelector('[data-command-list]');
 const faqList = document.querySelector('[data-faq-list]');
 const keybindSwitcher = document.querySelector('[data-keybind-switcher]');
 const commandSwitcher = document.querySelector('[data-command-switcher]');
+const chapterPrevButton = document.querySelector('[data-chapter-prev]');
+const chapterNextButton = document.querySelector('[data-chapter-next]');
 
 function nui(name, data = {}) {
   if (typeof GetParentResourceName !== 'function') return;
@@ -194,6 +210,8 @@ function normalizePayload(payload = {}) {
     keybindPages: payload.keybindPages && payload.keybindPages.length ? payload.keybindPages : fallbackPayload.keybindPages,
     commandPages: payload.commandPages && payload.commandPages.length ? payload.commandPages : fallbackPayload.commandPages,
     faqs: payload.faqs && payload.faqs.length ? payload.faqs : fallbackPayload.faqs,
+    chapters: payload.chapters && payload.chapters.length ? payload.chapters : fallbackPayload.chapters,
+    initialTab: payload.initialTab === 'chapters' ? 'chapters' : 'guide',
   };
 }
 
@@ -340,6 +358,32 @@ function renderFaqs() {
   `).join('');
 }
 
+function renderChapterList(selector, items) {
+  const node = document.querySelector(selector);
+  if (!node) return;
+
+  node.innerHTML = (items || []).map((item) => `<li>${escapeHtml(item)}</li>`).join('');
+}
+
+function renderChapters() {
+  const chapters = state.payload.chapters;
+  const chapter = chapters[state.chapterIndex] || chapters[0];
+  if (!chapter) return;
+
+  setText('[data-chapter-label]', chapter.label);
+  setText('[data-chapter-phase]', chapter.phase);
+  setText('[data-chapter-title]', chapter.title);
+  setText('[data-chapter-description]', chapter.description);
+  setText('[data-chapter-count]', `${state.chapterIndex + 1} / ${chapters.length}`);
+  setVisual('[data-chapter-cover]', chapter.coverImage);
+  renderChapterList('[data-chapter-additions]', chapter.additions);
+  renderChapterList('[data-chapter-changes]', chapter.changes);
+  renderChapterList('[data-chapter-fixes]', chapter.fixes);
+
+  chapterPrevButton.disabled = state.chapterIndex === 0;
+  chapterNextButton.disabled = state.chapterIndex >= chapters.length - 1;
+}
+
 function renderSlide() {
   const pages = state.payload.pages;
   const page = pages[state.index];
@@ -369,6 +413,8 @@ function renderSlide() {
 function render(payload) {
   state.payload = normalizePayload(payload);
   state.index = 0;
+  state.chapterIndex = 0;
+  state.activeTab = state.payload.initialTab;
   state.infoIndexes.keybinds = 0;
   state.infoIndexes.commands = 0;
   renderBrand();
@@ -376,6 +422,7 @@ function render(payload) {
   renderKeybinds();
   renderCommands();
   renderFaqs();
+  renderChapters();
   renderTabs();
 }
 
@@ -395,6 +442,20 @@ function prev() {
   if (state.index > 0) {
     state.index -= 1;
     renderSlide();
+  }
+}
+
+function nextChapter() {
+  if (state.chapterIndex < state.payload.chapters.length - 1) {
+    state.chapterIndex += 1;
+    renderChapters();
+  }
+}
+
+function prevChapter() {
+  if (state.chapterIndex > 0) {
+    state.chapterIndex -= 1;
+    renderChapters();
   }
 }
 
@@ -418,6 +479,16 @@ document.addEventListener('click', (event) => {
 
   if (event.target.closest('[data-prev]')) {
     prev();
+    return;
+  }
+
+  if (event.target.closest('[data-chapter-prev]')) {
+    prevChapter();
+    return;
+  }
+
+  if (event.target.closest('[data-chapter-next]')) {
+    nextChapter();
     return;
   }
 
@@ -470,8 +541,8 @@ document.addEventListener('click', (event) => {
 
 document.addEventListener('keyup', (event) => {
   if (event.key === 'Escape') close();
-  if (event.key === 'ArrowRight') next();
-  if (event.key === 'ArrowLeft') prev();
+  if (event.key === 'ArrowRight') state.activeTab === 'chapters' ? nextChapter() : next();
+  if (event.key === 'ArrowLeft') state.activeTab === 'chapters' ? prevChapter() : prev();
 });
 
 window.addEventListener('message', (event) => {

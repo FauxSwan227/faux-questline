@@ -192,6 +192,159 @@ button {
   gap: 18px;
 }
 
+.chapters-shell {
+  position: relative;
+  height: calc(100vh - 128px);
+  margin-top: 18px;
+  border-radius: 8px;
+  padding: 34px clamp(68px, 7vw, 112px);
+  overflow: hidden;
+}
+
+.chapters-shell::before {
+  content: "";
+  position: absolute;
+  inset: 0;
+  z-index: -1;
+  background:
+    radial-gradient(circle at 50% 48%, rgba(235, 128, 53, 0.25), transparent 32%),
+    linear-gradient(180deg, rgba(255, 246, 231, 0.58), rgba(247, 224, 195, 0.40));
+}
+
+.chapter-grid {
+  height: 100%;
+  display: grid;
+  grid-template-columns: minmax(220px, 0.9fr) minmax(320px, 1.25fr) minmax(250px, 0.95fr);
+  gap: clamp(22px, 3vw, 54px);
+  align-items: center;
+}
+
+.chapter-copy-panel h1 {
+  margin: 0;
+  font-family: "Bebas Neue", Impact, sans-serif;
+  font-size: clamp(54px, 5.5vw, 92px);
+  font-weight: 400;
+  line-height: 0.9;
+}
+
+.chapter-phase {
+  margin: -8px 0 20px;
+  color: rgba(36, 27, 24, 0.58);
+  text-transform: uppercase;
+  letter-spacing: 0.18em;
+  font-size: 12px;
+  font-weight: 900;
+}
+
+.chapter-description {
+  margin: 20px 0 0;
+  color: rgba(36, 27, 24, 0.78);
+  font-size: clamp(16px, 1.35vw, 20px);
+  font-weight: 600;
+  line-height: 1.55;
+}
+
+.chapter-cover-card {
+  position: relative;
+  min-height: clamp(360px, 58vh, 650px);
+  overflow: hidden;
+  border-radius: 8px;
+  background: rgba(25, 14, 8, 0.24);
+  box-shadow: 0 26px 64px rgba(25, 14, 8, 0.28), inset 0 0 0 1px rgba(255, 255, 255, 0.34);
+}
+
+.chapter-cover-card img {
+  width: 100%;
+  height: 100%;
+  position: absolute;
+  inset: 0;
+  display: block;
+  object-fit: cover;
+}
+
+.chapter-cover-shade {
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(180deg, transparent 36%, rgba(22, 12, 7, 0.72));
+}
+
+.chapter-cover-caption {
+  position: absolute;
+  right: 22px;
+  bottom: 22px;
+  left: 22px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  color: #fff;
+  text-transform: uppercase;
+  letter-spacing: 0.15em;
+  font-size: 11px;
+  font-weight: 900;
+}
+
+.chapter-cover-caption strong { font-size: 14px; }
+
+.chapter-changelog {
+  max-height: min(68vh, 690px);
+  overflow: auto;
+  padding: 22px;
+  border-radius: 8px;
+  background: rgba(255, 255, 255, 0.20);
+  box-shadow: inset 0 0 0 1px rgba(255, 255, 255, 0.30), 0 18px 42px rgba(28, 17, 10, 0.12);
+  backdrop-filter: blur(16px) saturate(1.14);
+}
+
+.changelog-group + .changelog-group {
+  margin-top: 24px;
+  padding-top: 22px;
+  border-top: 1px solid rgba(255, 255, 255, 0.34);
+}
+
+.changelog-group h2 {
+  margin: 0;
+  color: var(--orange);
+  text-transform: uppercase;
+  letter-spacing: 0.16em;
+  font-size: 13px;
+  font-weight: 900;
+}
+
+.changelog-group ul {
+  display: grid;
+  gap: 10px;
+  margin: 13px 0 0;
+  padding-left: 20px;
+  color: rgba(36, 27, 24, 0.78);
+  line-height: 1.42;
+  font-size: 14px;
+  font-weight: 600;
+}
+
+.chapter-arrow {
+  position: absolute;
+  z-index: 2;
+  top: 50%;
+  width: 46px;
+  height: 68px;
+  transform: translateY(-50%);
+  border-radius: 8px;
+  color: #fff;
+  background: linear-gradient(180deg, #e47a33, #b9541c);
+  box-shadow: var(--button-shadow);
+  font-size: 28px;
+  font-weight: 900;
+  cursor: pointer;
+}
+
+.chapter-arrow-left { left: 22px; }
+.chapter-arrow-right { right: 22px; }
+
+.chapter-arrow:disabled {
+  cursor: not-allowed;
+  opacity: 0.34;
+}
+
 .info-shell {
   position: relative;
   height: calc(100vh - 128px);
@@ -769,6 +922,19 @@ button {
     min-height: calc(100vh - 110px);
   }
 
+  .chapters-shell {
+    height: auto;
+    min-height: calc(100vh - 110px);
+  }
+
+  .chapter-grid {
+    grid-template-columns: 1fr 1fr;
+  }
+
+  .chapter-copy-panel {
+    grid-column: 1 / -1;
+  }
+
   .slide-grid {
     grid-template-columns: 1fr;
   }
@@ -812,6 +978,33 @@ button {
   .info-shell {
     padding: 22px 18px 86px;
   }
+
+  .chapters-shell {
+    padding: 74px 22px 30px;
+  }
+
+  .chapter-grid {
+    grid-template-columns: 1fr;
+    gap: 24px;
+  }
+
+  .chapter-cover-card {
+    min-height: 340px;
+  }
+
+  .chapter-changelog {
+    max-height: none;
+  }
+
+  .chapter-arrow {
+    top: 18px;
+    width: 42px;
+    height: 42px;
+    transform: none;
+  }
+
+  .chapter-arrow-left { left: 22px; }
+  .chapter-arrow-right { right: 22px; }
 
   .keybind-grid,
   .command-item,

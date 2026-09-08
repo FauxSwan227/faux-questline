@@ -20,6 +20,7 @@
             </div>
             <nav class="tab-nav" aria-label="Information tabs">
                 <button class="tab-button active" type="button" data-tab="guide">Guide</button>
+                <button class="tab-button" type="button" data-tab="chapters">Chapters</button>
                 <button class="tab-button" type="button" data-tab="keybinds">Keybinds</button>
                 <button class="tab-button" type="button" data-tab="commands">Commands</button>
                 <button class="tab-button" type="button" data-tab="faq">FAQ</button>
@@ -73,6 +74,34 @@
                     <button class="journey-button hidden" type="button" data-complete>Start Your Journey!</button>
                 </div>
             </footer>
+        </section>
+
+        <section class="chapters-shell liquid-glass hidden" data-panel="chapters">
+            <button class="chapter-arrow chapter-arrow-left" type="button" data-chapter-prev aria-label="Previous chapter">&lt;</button>
+            <div class="chapter-grid">
+                <article class="chapter-copy-panel">
+                    <p class="eyebrow" data-chapter-label>RadiantCoast Chapter 0</p>
+                    <p class="chapter-phase" data-chapter-phase>Beta Phase</p>
+                    <h1 data-chapter-title>The Beta Begins</h1>
+                    <p class="chapter-description" data-chapter-description></p>
+                </article>
+
+                <article class="chapter-cover-card">
+                    <img data-chapter-cover alt="" />
+                    <div class="chapter-cover-shade"></div>
+                    <div class="chapter-cover-caption">
+                        <span>Major Update</span>
+                        <strong data-chapter-count>1 / 1</strong>
+                    </div>
+                </article>
+
+                <article class="chapter-changelog">
+                    <div class="changelog-group"><h2>Additions</h2><ul data-chapter-additions></ul></div>
+                    <div class="changelog-group"><h2>Changes</h2><ul data-chapter-changes></ul></div>
+                    <div class="changelog-group"><h2>Fixes</h2><ul data-chapter-fixes></ul></div>
+                </article>
+            </div>
+            <button class="chapter-arrow chapter-arrow-right" type="button" data-chapter-next aria-label="Next chapter">&gt;</button>
         </section>
 
         <section class="info-shell liquid-glass hidden" data-panel="keybinds">

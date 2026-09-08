@@ -3,6 +3,7 @@ Config = {}
 Config.DebugCommand = true
 Config.OpenKey = 'F7'
 Config.AutoOpenOnPlayerLoaded = true
+Config.OnboardingMetadataKey = 'faux_onboarding_complete'
 
 Config.Brand = {
     logoText = 'F',
@@ -338,5 +339,29 @@ Config.FAQs = {
     {
         question = 'Can server owners edit this content?',
         answer = 'Yes. The tabs are fed from config, so keybinds, commands, and FAQs can be adjusted for your city.'
+    }
+}
+
+-- Chapters are shown first to characters who have completed the onboarding guide.
+-- Add each major RadiantCoast update here. Images are relative to the html folder.
+Config.Chapters = {
+    {
+        id = 'chapter-0',
+        label = 'RadiantCoast Chapter 0',
+        phase = 'Beta Phase',
+        title = 'The Beta Begins',
+        description = 'The first chapter of RadiantCoast is where the city opens its doors, its stories begin, and the community helps shape what comes next.',
+        coverImage = 'img/contract-bg.avif',
+        additions = {
+            'RadiantCoast Beta is now live.',
+            'Core city systems and starter experiences are available to explore.',
+            'The City Guide is available for new residents.'
+        },
+        changes = {
+            'This chapter establishes the foundation for future city updates.'
+        },
+        fixes = {
+            'Beta fixes and balance improvements will be documented here as they ship.'
+        }
     }
 }
