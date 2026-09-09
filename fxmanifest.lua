@@ -8,7 +8,8 @@ description 'QBCore multi-page city onboarding UI'
 version '0.1.0'
 
 dependencies {
-    'qb-core'
+    'qb-core',
+    'oxmysql'
 }
 
 ui_page 'html/index.html'
@@ -22,6 +23,7 @@ client_scripts {
 }
 
 server_scripts {
+    '@oxmysql/lib/MySQL.lua',
     'server/main.lua'
 }
 
