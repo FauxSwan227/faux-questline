@@ -4,6 +4,7 @@ Config.DebugCommand = true
 Config.OpenKey = 'F7'
 Config.AutoOpenOnPlayerLoaded = true
 Config.OnboardingMetadataKey = 'faux_onboarding_complete'
+Config.LegacyMigrationCommand = 'fauxonboard-migrate-legacy'
 
 Config.Brand = {
     logoText = 'F',

@@ -19,7 +19,9 @@ local function hasCompletedOnboarding()
     local playerData = QBCore.Functions.GetPlayerData()
     local metadata = playerData and playerData.metadata or {}
 
-    return metadata[Config.OnboardingMetadataKey] == true
+    local completed = metadata[Config.OnboardingMetadataKey]
+
+    return completed == true or completed == 1 or completed == 'true'
 end
 
 local function buildPayload()
