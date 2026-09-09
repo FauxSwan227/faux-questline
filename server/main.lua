@@ -17,7 +17,7 @@ RegisterCommand(Config.LegacyMigrationCommand, function(source)
         return
     end
 
-    if not MySQL or not MySQL.update or not MySQL.update.await then
+    if not MySQL or not MySQL.query or not MySQL.query.await then
         print('[faux-onboard] oxmysql is required to run the legacy onboarding migration.')
         return
     end
@@ -37,6 +37,6 @@ RegisterCommand(Config.LegacyMigrationCommand, function(source)
         ) IS NULL
     ]]):format(jsonPath, jsonPath)
 
-    local updated = MySQL.update.await(query)
+    local updated = MySQL.query.await(query)
     print(('[faux-onboard] Legacy migration complete. Marked %s existing character(s) for Chapters.'):format(updated or 0))
 end, true)
