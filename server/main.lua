@@ -1,5 +1,9 @@
 local QBCore = exports['qb-core']:GetCoreObject()
 
+local function isCompleted(value)
+    return value == true or value == 1 or value == '1' or value == 'true'
+end
+
 RegisterNetEvent('faux-onboard:server:completeOnboarding', function()
     local player = QBCore.Functions.GetPlayer(source)
     if not player then
@@ -7,6 +11,29 @@ RegisterNetEvent('faux-onboard:server:completeOnboarding', function()
     end
 
     player.Functions.SetMetaData(Config.OnboardingMetadataKey, true)
+end)
+
+RegisterNetEvent('faux-onboard:server:requestOpeningPage', function()
+    local source = source
+    local player = QBCore.Functions.GetPlayer(source)
+    if not player then
+        return
+    end
+
+    local completed = isCompleted(player.PlayerData.metadata[Config.OnboardingMetadataKey])
+
+    -- Query the saved value too, so a legacy migration takes effect without waiting
+    -- for an in-memory player object to be recreated.
+    if not completed and MySQL and MySQL.query and MySQL.query.await then
+        local metadataKey = Config.OnboardingMetadataKey:gsub('[^%w_]', '')
+        local result = MySQL.query.await(
+            'SELECT JSON_UNQUOTE(JSON_EXTRACT(metadata, ?)) AS onboarding_complete FROM players WHERE citizenid = ? LIMIT 1',
+            { '$."' .. metadataKey .. '"', player.PlayerData.citizenid }
+        )
+        completed = isCompleted(result and result[1] and result[1].onboarding_complete)
+    end
+
+    TriggerClientEvent('faux-onboard:client:open', source, completed and 'chapters' or 'guide')
 end)
 
 -- Run this once from the server console after installing the Chapters update.

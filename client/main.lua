@@ -24,7 +24,7 @@ local function hasCompletedOnboarding()
     return completed == true or completed == 1 or completed == 'true'
 end
 
-local function buildPayload()
+local function buildPayload(initialTab)
     return {
         brand = Config.Brand,
         pages = Config.Pages,
@@ -32,7 +32,7 @@ local function buildPayload()
         commandPages = Config.CommandPages,
         faqs = Config.FAQs,
         chapters = Config.Chapters,
-        initialTab = hasCompletedOnboarding() and 'chapters' or 'guide'
+        initialTab = initialTab or (hasCompletedOnboarding() and 'chapters' or 'guide')
     }
 end
 
@@ -41,10 +41,10 @@ local function setFocus(state)
     SetNuiFocus(state, state)
 end
 
-local function openOnboarding()
+local function openOnboarding(initialTab)
     SendNUIMessage({
         action = 'open',
-        payload = buildPayload()
+        payload = buildPayload(initialTab)
     })
     setFocus(true)
 end
@@ -54,8 +54,8 @@ local function closeOnboarding()
     setFocus(false)
 end
 
-RegisterNetEvent('faux-onboard:client:open', function()
-    openOnboarding()
+RegisterNetEvent('faux-onboard:client:open', function(initialTab)
+    openOnboarding(initialTab)
 end)
 
 RegisterNetEvent('faux-onboard:client:close', function()
@@ -64,7 +64,7 @@ end)
 
 RegisterNetEvent('QBCore:Client:OnPlayerLoaded', function()
     if Config.AutoOpenOnPlayerLoaded then
-        openOnboarding()
+        TriggerServerEvent('faux-onboard:server:requestOpeningPage')
     end
 end)
 
