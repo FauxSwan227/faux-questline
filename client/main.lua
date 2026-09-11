@@ -54,8 +54,17 @@ local function closeOnboarding()
     setFocus(false)
 end
 
+local function requestOpeningPage()
+    TriggerServerEvent('faux-onboard:server:requestOpeningPage')
+end
+
 RegisterNetEvent('faux-onboard:client:open', function(initialTab)
-    openOnboarding(initialTab)
+    if initialTab then
+        openOnboarding(initialTab)
+        return
+    end
+
+    requestOpeningPage()
 end)
 
 RegisterNetEvent('faux-onboard:client:close', function()
@@ -64,12 +73,12 @@ end)
 
 RegisterNetEvent('QBCore:Client:OnPlayerLoaded', function()
     if Config.AutoOpenOnPlayerLoaded then
-        TriggerServerEvent('faux-onboard:server:requestOpeningPage')
+        requestOpeningPage()
     end
 end)
 
 RegisterNetEvent('faux-onboard:client:startIntro', function()
-    openOnboarding()
+    requestOpeningPage()
 end)
 
 RegisterNUICallback('close', function(_, cb)
@@ -119,11 +128,11 @@ end)
 
 if Config.DebugCommand then
     RegisterCommand('onboard', function()
-        openOnboarding()
+        requestOpeningPage()
     end, false)
 
     RegisterCommand('fauxonboard', function()
-        openOnboarding()
+        requestOpeningPage()
     end, false)
 end
 
