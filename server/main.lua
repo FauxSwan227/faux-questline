@@ -6,29 +6,27 @@ end
 
 RegisterNetEvent('faux-onboard:server:completeOnboarding', function()
     local player = QBCore.Functions.GetPlayer(source)
-    if not player then
-        return
-    end
-
+    if not player then return end
     player.Functions.SetMetaData(Config.OnboardingMetadataKey, true)
 end)
 
 RegisterNetEvent('faux-onboard:server:requestOpeningPage', function()
     local source = source
     local player = QBCore.Functions.GetPlayer(source)
-    if not player then
-        return
-    end
+    if not player then return end
 
     local completed = isCompleted(player.PlayerData.metadata[Config.OnboardingMetadataKey])
 
     -- Query the saved value too, so a legacy migration takes effect without waiting
-    -- for an in-memory player object to be recreated.
     if not completed and MySQL and MySQL.query and MySQL.query.await then
-        local metadataKey = Config.OnboardingMetadataKey:gsub('[^%w_]', '')
+        -- FIX: Do not strip special characters (like hyphens) from the key, 
+        -- otherwise the JSON path won't match what QBCore actually saved in the DB.
+        local metadataKey = Config.OnboardingMetadataKey:gsub('"', '\\"') -- Only escape quotes
+        local jsonPath = '$."' .. metadataKey .. '"'
+        
         local result = MySQL.query.await(
             'SELECT JSON_UNQUOTE(JSON_EXTRACT(metadata, ?)) AS onboarding_complete FROM players WHERE citizenid = ? LIMIT 1',
-            { '$."' .. metadataKey .. '"', player.PlayerData.citizenid }
+            { jsonPath, player.PlayerData.citizenid }
         )
         completed = isCompleted(result and result[1] and result[1].onboarding_complete)
     end
@@ -37,20 +35,20 @@ RegisterNetEvent('faux-onboard:server:requestOpeningPage', function()
 end)
 
 -- Run this once from the server console after installing the Chapters update.
--- It marks only pre-existing QBCore characters that do not yet have this resource's metadata key.
 RegisterCommand(Config.LegacyMigrationCommand, function(source)
     if tonumber(source) ~= 0 then
         print(('[faux-onboard] "%s" can only be run from the server console.'):format(Config.LegacyMigrationCommand))
         return
     end
-
     if not MySQL or not MySQL.query or not MySQL.query.await then
-        print('[faux-onboard] oxmysql is required to run the legacy onboarding migration.')
-        return
+         print('[faux-onboard] oxmysql is required to run the legacy onboarding migration.')
+         return
     end
-
-    local metadataKey = Config.OnboardingMetadataKey:gsub('[^%w_]', '')
+    
+    -- FIX: Same here, preserve the exact key format for the JSON path
+    local metadataKey = Config.OnboardingMetadataKey:gsub('"', '\\"')
     local jsonPath = '$."' .. metadataKey .. '"'
+    
     local query = ([[
         UPDATE players
         SET metadata = JSON_SET(
@@ -63,7 +61,7 @@ RegisterCommand(Config.LegacyMigrationCommand, function(source)
             '%s'
         ) IS NULL
     ]]):format(jsonPath, jsonPath)
-
+    
     local updated = MySQL.query.await(query)
     print(('[faux-onboard] Legacy migration complete. Marked %s existing character(s) for Chapters.'):format(updated or 0))
 end, true)

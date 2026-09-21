@@ -11,16 +11,13 @@ local function pageById(pageId)
             return page
         end
     end
-
     return nil
 end
 
 local function hasCompletedOnboarding()
     local playerData = QBCore.Functions.GetPlayerData()
     local metadata = playerData and playerData.metadata or {}
-
     local completed = metadata[Config.OnboardingMetadataKey]
-
     return completed == true or completed == 1 or completed == 'true'
 end
 
@@ -63,7 +60,6 @@ RegisterNetEvent('faux-onboard:client:open', function(initialTab)
         openOnboarding(initialTab)
         return
     end
-
     requestOpeningPage()
 end)
 
@@ -71,14 +67,31 @@ RegisterNetEvent('faux-onboard:client:close', function()
     closeOnboarding()
 end)
 
+-- 1. INTENTIONALLY LEFT EMPTY: This fires too early during multichar creation.
 RegisterNetEvent('QBCore:Client:OnPlayerLoaded', function()
-    if Config.AutoOpenOnPlayerLoaded then
+    -- Do nothing here. We wait for the character creator to finish.
+end)
+
+-- 2. THE PERFECT HOOK: Fires exactly when the 17Movement skin menu is closed.
+-- No matter how long the player takes, the UI will only request to open AFTER this.
+RegisterNetEvent('17mov_CharacterSystem:SkinMenuClosed', function()
+    if Config.AutoOpenOnPlayerLoaded and not nuiOpen then
         requestOpeningPage()
     end
 end)
 
+-- 3. FALLBACK: In case nation-multicharacter spawns them without triggering the 17Movement skin menu.
+RegisterNetEvent('nation-multichar:client:spawn', function()
+    if Config.AutoOpenOnPlayerLoaded and not nuiOpen then
+        requestOpeningPage()
+    end
+end)
+
+-- 4. MANUAL FALLBACK: The 100% foolproof method if you ever need to trigger it manually from another script.
 RegisterNetEvent('faux-onboard:client:startIntro', function()
-    requestOpeningPage()
+    if not nuiOpen then
+        requestOpeningPage()
+    end
 end)
 
 RegisterNUICallback('close', function(_, cb)
@@ -88,13 +101,11 @@ end)
 
 RegisterNUICallback('setWaypoint', function(data, cb)
     local page = pageById(data and data.pageId)
-
     if not page or not page.waypoint then
         notify('No waypoint is available for this page.', 'error')
         cb({ ok = false })
         return
     end
-
     closeOnboarding()
     SetNewWaypoint(page.waypoint.x, page.waypoint.y)
     notify(('Waypoint set: %s'):format(page.mapLabel or page.title), 'success')
@@ -104,24 +115,19 @@ end)
 RegisterNUICallback('complete', function(_, cb)
     closeOnboarding()
     notify('Welcome to the city. Your journey begins now.', 'success')
-
     TriggerServerEvent('faux-onboard:server:completeOnboarding')
-
     if Config.CompleteEvent then
         TriggerServerEvent(Config.CompleteEvent)
     end
-
     cb({ ok = true })
 end)
 
 RegisterNUICallback('runCommand', function(data, cb)
     local command = data and data.command
-
     if type(command) ~= 'string' or command == '' or command:find('%s') or command:find('^/') then
         cb({ ok = false })
         return
     end
-
     ExecuteCommand(command)
     cb({ ok = true })
 end)
@@ -130,7 +136,6 @@ if Config.DebugCommand then
     RegisterCommand('onboard', function()
         requestOpeningPage()
     end, false)
-
     RegisterCommand('fauxonboard', function()
         requestOpeningPage()
     end, false)
