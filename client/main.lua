@@ -51,8 +51,9 @@ local function closeOnboarding()
     setFocus(false)
 end
 
-local function requestOpeningPage()
-    TriggerServerEvent('faux-onboard:server:requestOpeningPage')
+-- FIX: Added isAutoOpen parameter to differentiate between auto-triggers and manual commands
+local function requestOpeningPage(isAutoOpen)
+    TriggerServerEvent('faux-onboard:server:requestOpeningPage', isAutoOpen)
 end
 
 RegisterNetEvent('faux-onboard:client:open', function(initialTab)
@@ -60,37 +61,38 @@ RegisterNetEvent('faux-onboard:client:open', function(initialTab)
         openOnboarding(initialTab)
         return
     end
-    requestOpeningPage()
+    requestOpeningPage(false)
 end)
 
 RegisterNetEvent('faux-onboard:client:close', function()
     closeOnboarding()
 end)
 
--- 1. INTENTIONALLY LEFT EMPTY: This fires too early during multichar creation.
+-- Intentionally left empty. This fires too early during multichar creation.
 RegisterNetEvent('QBCore:Client:OnPlayerLoaded', function()
-    -- Do nothing here. We wait for the character creator to finish.
+    -- Do nothing here.
 end)
 
--- 2. THE PERFECT HOOK: Fires exactly when the 17Movement skin menu is closed.
--- No matter how long the player takes, the UI will only request to open AFTER this.
+-- THE PERFECT HOOK: Fires when the 17Movement skin menu is closed.
+-- We pass 'true' so the server knows this is an automatic attempt.
 RegisterNetEvent('17mov_CharacterSystem:SkinMenuClosed', function()
     if Config.AutoOpenOnPlayerLoaded and not nuiOpen then
-        requestOpeningPage()
+        requestOpeningPage(true) 
     end
 end)
 
--- 3. FALLBACK: In case nation-multicharacter spawns them without triggering the 17Movement skin menu.
+-- FALLBACK: In case nation-multicharacter spawns them without triggering the 17Movement skin menu.
 RegisterNetEvent('nation-multichar:client:spawn', function()
     if Config.AutoOpenOnPlayerLoaded and not nuiOpen then
-        requestOpeningPage()
+        requestOpeningPage(true) 
     end
 end)
 
--- 4. MANUAL FALLBACK: The 100% foolproof method if you ever need to trigger it manually from another script.
+-- MANUAL FALLBACK: Triggered by commands or keybinds. 
+-- We pass 'false' so returning players can still open the Chapters manually.
 RegisterNetEvent('faux-onboard:client:startIntro', function()
     if not nuiOpen then
-        requestOpeningPage()
+        requestOpeningPage(false) 
     end
 end)
 
@@ -134,10 +136,10 @@ end)
 
 if Config.DebugCommand then
     RegisterCommand('onboard', function()
-        requestOpeningPage()
+        requestOpeningPage(false) -- Manual trigger
     end, false)
     RegisterCommand('fauxonboard', function()
-        requestOpeningPage()
+        requestOpeningPage(false) -- Manual trigger
     end, false)
 end
 
