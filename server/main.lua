@@ -10,7 +10,8 @@ RegisterNetEvent('faux-onboard:server:completeOnboarding', function()
     player.Functions.SetMetaData(Config.OnboardingMetadataKey, true)
 end)
 
-RegisterNetEvent('faux-onboard:server:requestOpeningPage', function()
+-- FIX: Added 'isAutoOpen' parameter to prevent UI from popping up for returning players changing clothes
+RegisterNetEvent('faux-onboard:server:requestOpeningPage', function(isAutoOpen)
     local source = source
     local player = QBCore.Functions.GetPlayer(source)
     if not player then return end
@@ -19,9 +20,8 @@ RegisterNetEvent('faux-onboard:server:requestOpeningPage', function()
 
     -- Query the saved value too, so a legacy migration takes effect without waiting
     if not completed and MySQL and MySQL.query and MySQL.query.await then
-        -- FIX: Do not strip special characters (like hyphens) from the key, 
-        -- otherwise the JSON path won't match what QBCore actually saved in the DB.
-        local metadataKey = Config.OnboardingMetadataKey:gsub('"', '\\"') -- Only escape quotes
+        -- FIX: Only escape quotes, DO NOT strip hyphens or special characters
+        local metadataKey = Config.OnboardingMetadataKey:gsub('"', '\\"')
         local jsonPath = '$."' .. metadataKey .. '"'
         
         local result = MySQL.query.await(
@@ -29,6 +29,12 @@ RegisterNetEvent('faux-onboard:server:requestOpeningPage', function()
             { jsonPath, player.PlayerData.citizenid }
         )
         completed = isCompleted(result and result[1] and result[1].onboarding_complete)
+    end
+
+    -- FIX: If this is an auto-open attempt (e.g., closing clothing menu) 
+    -- and the player has already completed onboarding, do absolutely nothing.
+    if isAutoOpen and completed then
+        return
     end
 
     TriggerClientEvent('faux-onboard:client:open', source, completed and 'chapters' or 'guide')
@@ -45,7 +51,7 @@ RegisterCommand(Config.LegacyMigrationCommand, function(source)
          return
     end
     
-    -- FIX: Same here, preserve the exact key format for the JSON path
+    -- FIX: Only escape quotes, DO NOT strip hyphens
     local metadataKey = Config.OnboardingMetadataKey:gsub('"', '\\"')
     local jsonPath = '$."' .. metadataKey .. '"'
     

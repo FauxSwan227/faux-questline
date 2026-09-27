@@ -51,7 +51,7 @@ local function closeOnboarding()
     setFocus(false)
 end
 
--- FIX: Added isAutoOpen parameter to differentiate between auto-triggers and manual commands
+-- FIX: Added 'isAutoOpen' parameter
 local function requestOpeningPage(isAutoOpen)
     TriggerServerEvent('faux-onboard:server:requestOpeningPage', isAutoOpen)
 end
@@ -68,12 +68,12 @@ RegisterNetEvent('faux-onboard:client:close', function()
     closeOnboarding()
 end)
 
--- Intentionally left empty. This fires too early during multichar creation.
+-- FIX: Intentionally left empty. This fires too early during character creation.
 RegisterNetEvent('QBCore:Client:OnPlayerLoaded', function()
     -- Do nothing here.
 end)
 
--- THE PERFECT HOOK: Fires when the 17Movement skin menu is closed.
+-- FIX: The perfect hook. Fires ONLY when the 17Movement skin menu is closed.
 -- We pass 'true' so the server knows this is an automatic attempt.
 RegisterNetEvent('17mov_CharacterSystem:SkinMenuClosed', function()
     if Config.AutoOpenOnPlayerLoaded and not nuiOpen then
