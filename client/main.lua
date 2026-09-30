@@ -75,16 +75,20 @@ end)
 
 -- FIX: The perfect hook. Fires ONLY when the 17Movement skin menu is closed.
 -- We pass 'true' so the server knows this is an automatic attempt.
-RegisterNetEvent('17mov_CharacterSystem:SkinMenuClosed', function()
-    if Config.AutoOpenOnPlayerLoaded and not nuiOpen then
-        requestOpeningPage(true) 
-    end
-end)
+local function requestOpeningPage(isAutoOpen)
+    TriggerServerEvent('faux-onboard:server:requestOpeningPage', isAutoOpen)
+end
 
 -- FALLBACK: In case nation-multicharacter spawns them without triggering the 17Movement skin menu.
 RegisterNetEvent('nation-multichar:client:spawn', function()
     if Config.AutoOpenOnPlayerLoaded and not nuiOpen then
         requestOpeningPage(true) 
+    end
+end)
+
+RegisterNetEvent('17mov_CharacterSystem:SkinMenuClosed', function()
+    if Config.AutoOpenOnPlayerLoaded and not nuiOpen then
+        requestOpeningPage(true)
     end
 end)
 
