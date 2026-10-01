@@ -11,6 +11,7 @@ local function pageById(pageId)
             return page
         end
     end
+
     return nil
 end
 
@@ -18,6 +19,7 @@ local function hasCompletedOnboarding()
     local playerData = QBCore.Functions.GetPlayerData()
     local metadata = playerData and playerData.metadata or {}
     local completed = metadata[Config.OnboardingMetadataKey]
+
     return completed == true or completed == 1 or completed == 'true'
 end
 
@@ -43,6 +45,7 @@ local function openOnboarding(initialTab)
         action = 'open',
         payload = buildPayload(initialTab)
     })
+
     setFocus(true)
 end
 
@@ -51,7 +54,8 @@ local function closeOnboarding()
     setFocus(false)
 end
 
--- FIX: Added 'isAutoOpen' parameter
+-- isAutoOpen = true  -> automatic trigger, such as closing the skin/clothing menu
+-- isAutoOpen = false -> manual trigger, such as /onboard or keybind
 local function requestOpeningPage(isAutoOpen)
     TriggerServerEvent('faux-onboard:server:requestOpeningPage', isAutoOpen)
 end
@@ -61,6 +65,7 @@ RegisterNetEvent('faux-onboard:client:open', function(initialTab)
         openOnboarding(initialTab)
         return
     end
+
     requestOpeningPage(false)
 end)
 
@@ -68,35 +73,26 @@ RegisterNetEvent('faux-onboard:client:close', function()
     closeOnboarding()
 end)
 
--- FIX: Intentionally left empty. This fires too early during character creation.
+-- IMPORTANT:
+-- Do NOT open the onboarding UI here.
+-- This event fires too early when using nation-multicharacter / 17Movement.
 RegisterNetEvent('QBCore:Client:OnPlayerLoaded', function()
-    -- Do nothing here.
+    -- Intentionally empty.
 end)
 
--- FIX: The perfect hook. Fires ONLY when the 17Movement skin menu is closed.
--- We pass 'true' so the server knows this is an automatic attempt.
-local function requestOpeningPage(isAutoOpen)
-    TriggerServerEvent('faux-onboard:server:requestOpeningPage', isAutoOpen)
-end
-
--- FALLBACK: In case nation-multicharacter spawns them without triggering the 17Movement skin menu.
-RegisterNetEvent('nation-multichar:client:spawn', function()
-    if Config.AutoOpenOnPlayerLoaded and not nuiOpen then
-        requestOpeningPage(true) 
-    end
-end)
-
+-- Automatic trigger:
+-- Only request the page after the 17Movement skin menu is closed.
+-- The server will decide whether this player should actually see it.
 RegisterNetEvent('17mov_CharacterSystem:SkinMenuClosed', function()
     if Config.AutoOpenOnPlayerLoaded and not nuiOpen then
         requestOpeningPage(true)
     end
 end)
 
--- MANUAL FALLBACK: Triggered by commands or keybinds. 
--- We pass 'false' so returning players can still open the Chapters manually.
+-- Manual intro trigger.
 RegisterNetEvent('faux-onboard:client:startIntro', function()
     if not nuiOpen then
-        requestOpeningPage(false) 
+        requestOpeningPage(false)
     end
 end)
 
@@ -107,43 +103,53 @@ end)
 
 RegisterNUICallback('setWaypoint', function(data, cb)
     local page = pageById(data and data.pageId)
+
     if not page or not page.waypoint then
         notify('No waypoint is available for this page.', 'error')
         cb({ ok = false })
         return
     end
+
     closeOnboarding()
     SetNewWaypoint(page.waypoint.x, page.waypoint.y)
     notify(('Waypoint set: %s'):format(page.mapLabel or page.title), 'success')
+
     cb({ ok = true })
 end)
 
 RegisterNUICallback('complete', function(_, cb)
     closeOnboarding()
     notify('Welcome to the city. Your journey begins now.', 'success')
+
     TriggerServerEvent('faux-onboard:server:completeOnboarding')
+
     if Config.CompleteEvent then
         TriggerServerEvent(Config.CompleteEvent)
     end
+
     cb({ ok = true })
 end)
 
 RegisterNUICallback('runCommand', function(data, cb)
     local command = data and data.command
+
     if type(command) ~= 'string' or command == '' or command:find('%s') or command:find('^/') then
         cb({ ok = false })
         return
     end
+
     ExecuteCommand(command)
+
     cb({ ok = true })
 end)
 
 if Config.DebugCommand then
     RegisterCommand('onboard', function()
-        requestOpeningPage(false) -- Manual trigger
+        requestOpeningPage(false)
     end, false)
+
     RegisterCommand('fauxonboard', function()
-        requestOpeningPage(false) -- Manual trigger
+        requestOpeningPage(false)
     end, false)
 end
 
